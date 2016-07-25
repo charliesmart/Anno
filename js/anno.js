@@ -50,8 +50,8 @@ Anno.prototype.currentTool = function(currentTool) {
 // --------------------------------------------------
 // Sets and gets edit mode
 // --------------------------------------------------
-Anno.prototype.editMode = function(editMode) {
-    this.setting('editMode', editMode);
+Anno.prototype.editMode = function(mode) {
+    this.setting('mode', mode);
 }
 
 // --------------------------------------------------
@@ -63,7 +63,7 @@ Anno.prototype.bindUIActions = function() {
     // Listens for user clicking on toolbar items
     this.config.container.on('mouseDown', function(e) {
 	e.preventDefault;
-
+	
 	that.addText(e);
     });
 
@@ -112,7 +112,7 @@ Anno.prototype.killEmptyLabels = function() {
 	var text = $(e).text();
 	
 	if (text == '') $(e).remove(); 
-    })
+    });
 }
 
 
