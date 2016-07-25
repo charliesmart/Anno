@@ -25,7 +25,7 @@ var Anno = function(container) {
 // values
 // --------------------------------------------------
 Anno.prototype.setting = function(setting, value) {
-    if (typeof value == undefined) {
+    if (value == null) {
 	return this.config[setting];
     } else {
 	this.config[setting] = value;
@@ -43,15 +43,38 @@ Anno.prototype.tools = function(tools) {
 // --------------------------------------------------
 // Sets and gets current tool
 // --------------------------------------------------
-Anno.prototype.currentTool = function(currentTool) {
+Anno.prototype.tool = function(currentTool) {
     return this.setting('currentTool', currentTool);
+}
+
+// --------------------------------------------------
+// Sets and gets container
+// --------------------------------------------------
+Anno.prototype.container = function(container) {
+    return this.setting('container', container);
 }
 
 // --------------------------------------------------
 // Sets and gets edit mode
 // --------------------------------------------------
-Anno.prototype.editMode = function(mode) {
-    this.setting('mode', mode);
+Anno.prototype.mode = function(newMode) {
+    if (newMode) this.modeSwitch(newMode);
+    return this.setting('mode', newMode);
+}
+
+// --------------------------------------------------
+// Changes contenteditable status when in move mode
+// --------------------------------------------------
+Anno.prototype.modeSwitch = function(mode) {
+    if (mode == 'move') {
+	$('.anno--label').attr('contenteditable', 'false')
+	    .css('cursor', 'move');
+	this.moveOn();
+    } else {
+	$('.anno--label').attr('contenteditable', 'true')
+	    .css('cursor', 'text');
+	this.moveOff();
+    }
 }
 
 // --------------------------------------------------
@@ -60,10 +83,12 @@ Anno.prototype.editMode = function(mode) {
 Anno.prototype.bindUIActions = function() {
     var that = this;
     
-    // Listens for user clicking on toolbar items
-    this.config.container.on('mouseDown', function(e) {
+    // Listens for clicks on container
+    this.config.container.on('click', function(e) {
 	e.preventDefault;
 	
+	// Prevent clicks on labels from bubbling and creating new labels
+	if (e.target != this) return false;
 	that.addText(e);
     });
 
@@ -79,7 +104,7 @@ Anno.prototype.bindUIActions = function() {
 // Appends and positions empty texteditable div
 // --------------------------------------------------
 Anno.prototype.addText = function(e) {
-    if (this.config.mode == 'text') {
+    if (this.mode() == 'text') {
 	var mouseX = e.pageX,
 	    mouseY = e.pageY,
 	    offsetX = this.config.container.offset().left,
@@ -98,8 +123,10 @@ Anno.prototype.addText = function(e) {
 	content.style.top = positionTop + '%';
 	content.style.left = positionLeft + '%';
 	this.config.container.append(content);
+
+	content.focus();
     }
-    content.focus();
+
 }
 
 // --------------------------------------------------
@@ -115,10 +142,33 @@ Anno.prototype.killEmptyLabels = function() {
     });
 }
 
+// --------------------------------------------------
+// Main function for repositioning labels
+// --------------------------------------------------
+Anno.prototype.moveOn = function() {
+
+    // Start draggable on elements
+    $('.anno--label').draggable({
+	disabled: false,
+	cursor: 'move',
+	stop: function() {
+	    var left = parseInt($(this).css('left')),
+		top = parseInt($(this).css('top')),
+		width = parseInt($(this).parent().width()),
+		height = parseInt($(this).parent().height());
+	    $(this).css('left', left / width * 100 + '%');
+	    $(this).css('top', top / height * 100 + '%');
+	}
+    })
+}
 
 
-
-
+// --------------------------------------------------
+// Shut off draggable when we're done with it
+// --------------------------------------------------
+Anno.prototype.moveOff = function() {
+    $('.anno--label').draggable('disable');
+}
 
 // // --------------------------------------------------
 // // Registers click on tool, sets current tool, and

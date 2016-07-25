@@ -6,7 +6,7 @@ A toolkit for adding anno(tation) capabilities to anything.
 
 ## Contents
 
-* [Getting Started](#gettingstarted)
+* [Getting Started](#getting-started)
 * [API](#api)
 
 ## Getting started
@@ -26,12 +26,13 @@ A toolkit for adding anno(tation) capabilities to anything.
    ```javascript
    var anno = new Anno('.container');
    ```
-4. Set up a toolbar. Each button should have a `'data-func'` attribute containing a tool. A list of tools is provided [here](#).
+4. Create a div to hold your toolbar.
 
    ```html
-   <div id="toolbar">
-   	<button data-func="bold">Bold</button>
-	<button data-func="itallic">Itallic</button>
-	<!-- ... -->
-   </div>
+   <div id="toolbar"></div>
    ```
+
+To be continued...
+
+## API
+
