@@ -36,3 +36,28 @@ To be continued...
 
 ## API
 
+[#](#) anno.**container**([container])
+
+Change the annotation container or return the annotation container.
+
+```javascript
+// Sets new container
+anno.conatiner('#new-container');
+
+// Gets old container
+anno.container();
+// return: Container JQuery object
+```
+
+[#](#) anno.**mode**([mode])
+
+Sets mode or gets current mode. Possible modes are `'text'` and `'move'`.
+
+```javascript
+// Sets mode to 'move'
+anno.mode('move');
+
+// Gets mode
+anno.mode();
+```
+

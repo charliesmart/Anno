@@ -51,7 +51,7 @@ Anno.prototype.tool = function(currentTool) {
 // Sets and gets container
 // --------------------------------------------------
 Anno.prototype.container = function(container) {
-    return this.setting('container', container);
+    return this.setting('container', $(container));
 }
 
 // --------------------------------------------------
