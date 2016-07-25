@@ -1,12 +1,21 @@
+/****************************************************
+
+     Anno
+     A library for making anno(tation) generators.
+     by Charlie Smart
+     charlie.r.smart@gmail.com
+
+*****************************************************/
+
 var Anno = function(container) {
     this.config = {
 	container: $(container),
 	tools: '',
 	currentTool: '',
 	labels: 'anno--label',
-	editMode: true,
+	mode: 'text',
     }
-    console.log(this.config.container);
+    
     this.bindUIActions();
     return this;
 }
@@ -23,9 +32,6 @@ Anno.prototype.setting = function(setting, value) {
 	return this;
     }
 }
-
-// --------------------------------------------------
-// 
 
 // --------------------------------------------------
 // Sets and gets of tools
@@ -53,20 +59,18 @@ Anno.prototype.editMode = function(editMode) {
 // --------------------------------------------------
 Anno.prototype.bindUIActions = function() {
     var that = this;
-    console.log('binding');
+    
     // Listens for user clicking on toolbar items
-    this.config.container.on('click', function(e) {
+    this.config.container.on('mouseDown', function(e) {
 	e.preventDefault;
-	console.log('click');
-	// Prevent clicks on labels from bubbling and creating new labels
-	if (e.target != this) return false;
+
 	that.addText(e);
     });
 
     // If a user leaves an empty label, just delete it
     $(document).on('blur','.' +  this.config.labels, function(e) {
 	e.preventDefault;
-	console.log('blur');
+	
 	that.killEmptyLabels();
     });
 }
@@ -75,7 +79,7 @@ Anno.prototype.bindUIActions = function() {
 // Appends and positions empty texteditable div
 // --------------------------------------------------
 Anno.prototype.addText = function(e) {
-    if (this.config.editMode) {
+    if (this.config.mode == 'text') {
 	var mouseX = e.pageX,
 	    mouseY = e.pageY,
 	    offsetX = this.config.container.offset().left,
@@ -103,12 +107,10 @@ Anno.prototype.addText = function(e) {
 // in Taken. (Actually by searching for classes.)
 // --------------------------------------------------
 Anno.prototype.killEmptyLabels = function() {
-    console.log('Killing labels...');
-    console.log(this.config.labels);
     
     $('.' + this.config.labels).each(function(i, e) {
 	var text = $(e).text();
-	console.log(text);
+	
 	if (text == '') $(e).remove(); 
     })
 }
