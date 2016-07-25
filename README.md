@@ -1,3 +1,5 @@
-# Anno: An image annotation generator toolkit
+# Anno
+
+A toolkit for adding anno(tation) capabilities to anything. 
 
 ## Getting started
