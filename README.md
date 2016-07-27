@@ -44,7 +44,7 @@ Change the annotation container or return the annotation container.
 // Sets new container
 anno.conatiner('#new-container');
 
-// Gets old container
+// Gets current container
 anno.container();
 // return: Container JQuery object
 ```
@@ -57,7 +57,9 @@ Sets mode or gets current mode. Possible modes are `'text'` and `'move'`.
 // Sets mode to 'move'
 anno.mode('move');
 
-// Gets mode
+// Gets current mode
 anno.mode();
 ```
+
+
 

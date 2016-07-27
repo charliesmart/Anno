@@ -10,7 +10,7 @@
 var Anno = function(container) {
     this.config = {
 	container: $(container),
-	tools: '',
+	toolbar: [],
 	currentTool: '',
 	labels: 'anno--label',
 	mode: 'text',
@@ -36,8 +36,8 @@ Anno.prototype.setting = function(setting, value) {
 // --------------------------------------------------
 // Sets and gets of tools
 // --------------------------------------------------
-Anno.prototype.tools = function(tools) {
-    return this.setting('tools', $(tools));
+Anno.prototype.toolbar = function(toolbar) {
+    return this.setting('toolbar', $(toolbar));
 }
 
 // --------------------------------------------------
@@ -67,13 +67,19 @@ Anno.prototype.mode = function(newMode) {
 // --------------------------------------------------
 Anno.prototype.modeSwitch = function(mode) {
     if (mode == 'move') {
-	$('.anno--label').attr('contenteditable', 'false')
-	    .css('cursor', 'move');
-	this.moveOn();
+	this.moveStart();
     } else {
-	$('.anno--label').attr('contenteditable', 'true')
-	    .css('cursor', 'text');
-	this.moveOff();
+	this.moveStop();
+    }
+}
+
+Anno.prototype.generateTools = function(tools, toolClass, fill="icon") {
+    var toolbar = this.config.toolbar;
+    
+    for (var i = 0; i < tools.length; i++) {
+	toolbar.append('<button data-func="' + tools[i] +
+		       '" class="' + toolClass +
+		       '"></button>');
     }
 }
 
@@ -145,8 +151,11 @@ Anno.prototype.killEmptyLabels = function() {
 // --------------------------------------------------
 // Main function for repositioning labels
 // --------------------------------------------------
-Anno.prototype.moveOn = function() {
+Anno.prototype.moveStart = function() {
 
+    $('.anno--label').attr('contenteditable', 'false')
+	.css('cursor', 'move');
+    
     // Start draggable on elements
     $('.anno--label').draggable({
 	disabled: false,
@@ -166,8 +175,29 @@ Anno.prototype.moveOn = function() {
 // --------------------------------------------------
 // Shut off draggable when we're done with it
 // --------------------------------------------------
-Anno.prototype.moveOff = function() {
-    $('.anno--label').draggable('disable');
+Anno.prototype.moveStop = function() {
+    $('.anno--label').attr('contenteditable', 'true')
+	    .css('cursor', 'text');
+    $('.anno--label').draggable('destroy');
+}
+
+// --------------------------------------------------
+// Gets the HTML for the final labels
+// --------------------------------------------------
+Anno.prototype.getHTML = function() {
+
+    // Get the inner HTML
+    var html = this.config.container.html();
+
+    // Strip out contenteditable tags because we don't
+    // want users editing the content
+    html = html.split(' ');
+    html = html.map(function(attr){
+	if (attr.startsWith('contenteditable=')) return '';
+	return attr;
+    });
+    
+    return html.join(' ');
 }
 
 // // --------------------------------------------------
@@ -211,6 +241,3 @@ Anno.prototype.moveOff = function() {
 //     this.config.tools.unbind('click');
 //     document.execCommand(basicTool, false);
 //}
-
-
-
